@@ -51,11 +51,14 @@ systemctl enable kubelet.service
 kubeadm config images pull
 kubeadm init --pod-network-cidr=192.168.0.0/16
 wget https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/calico.yaml
+#Если нужен будет nginx ingress просто раскоментировать стр 55, 61, 60
+#wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.1/deploy/static/provider/do/deploy.yaml
 echo "export KUBECONFIG=/etc/kubernetes/admin.conf" > /etc/environment
 export KUBECONFIG=/etc/kubernetes/admin.conf
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
-kubectl create namespace ingress-nginx
+#kubectl create namespace ingress-nginx
 kubectl apply -f calico.yaml
+#kubectl apply -f deploy.yaml --namespace=ingress-nginx
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-

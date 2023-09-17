@@ -4,7 +4,7 @@
 #Скрипт сможет поставить k8s с версии 1.26.0 и до 1.28.1 было протестировано. Не забудьте только заменить значения на строке 45
 hostnamectl set-hostname 'k8s-master'
 setenforce 0
-yum update -y
+dnf update -y
 swapoff -a
 sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
@@ -25,23 +25,23 @@ modprobe overlay
 modprobe br_netfilter
 
 export VERSION=1.23
-curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_8/devel:kubic:libcontainers:stable.repo
-curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/CentOS_8/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo
+curl -L -o /etc/dnf.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_8/devel:kubic:libcontainers:stable.repo
+curl -L -o /etc/dnf.repos.d/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/CentOS_8/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo
 dnf install -y cri-o
 systemctl enable crio
 systemctl start crio
 
-cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+cat <<EOF > /etc/dnf.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+baseurl=https://packages.cloud.google.com/dnf/repos/kubernetes-el7-x86_64
 enabled=1
 gpgcheck=1
 repo_gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+gpgkey=https://packages.cloud.google.com/dnf/doc/dnf-key.gpg https://packages.cloud.google.com/dnf/doc/rpm-package-key.gpg
 EOF
 
-yum update -y
+dnf update -y
 dnf install -y kubelet-1.26.8 kubeadm-1.26.8 kubectl-1.26.8
 dnf clean all
 systemctl enable kubelet
